@@ -3,9 +3,9 @@ FROM python:3.12-slim
 
 # Set environment variables for PostgreSQL connection
 ENV POSTGRES_USER=parishiieb
-ENV POSTGRES_PASSWORD=A82brOlJyMWd
-ENV POSTGRES_HOST=ep-shy-resonance-a59aitl2.us-east-2.aws.neon.tech
-ENV POSTGRES_DB=calendly
+ENV POSTGRES_PASSWORD=
+ENV POSTGRES_HOST=
+ENV POSTGRES_DB=
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
