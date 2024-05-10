@@ -16,7 +16,7 @@ interface AgentState {
 }
 
 export const useAgentStore = create<AgentState>((set) => ({
-  agentname: "", // Corrected spelling here
+  agentname: "", 
   role: "",
   goal: "",
   backstory: "",
@@ -32,7 +32,7 @@ export const useAgentStore = create<AgentState>((set) => ({
 
 const Agent = () => {
   const {
-    agentname, // Corrected spelling here
+    agentname, 
     role,
     goal,
     backstory,
