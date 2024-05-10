@@ -10,7 +10,7 @@ import logging
 from openai import api_key
 
 
-# Your existing FastAPI setup
+
 app = FastAPI()
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Model for ChatGPT prompt request
 class ChatGPTRequest(BaseModel):
     prompt: str
 
@@ -50,7 +49,7 @@ class Data(BaseModel):
     maxtokens: int
     openaiapibase: str
     openaiapikeys: str
-    agentname: str  # Change the field name here
+    agentname: str  
     role: str
     goal: str
     backstory: str
@@ -85,11 +84,10 @@ class AgentInfo(BaseModel):
 class ResponseModel(BaseModel):
     response: str
     
-# PostgreSQL connection settings
+
 POSTGRES_DSN = "postgresql://parishiieb:@ep-shy-resonance-a59aitl2.us-east-2.aws.neon.tech/calendly?sslmode=require"
 
 
-# Helper function to create a database connection pool
 async def create_pool():
     return await asyncpg.create_pool(dsn=POSTGRES_DSN)
 
@@ -102,12 +100,12 @@ async def startup_event():
     global pool
     pool = await create_pool()
 
-# Event handler to close the database connection pool when the application stops
+
 @app.on_event("shutdown")
 async def shutdown_event():
     await pool.close()
 
-# Model for ChatBox
+
 class ChatBox(BaseModel):
     chatName: str
     chatDesc: str
@@ -116,7 +114,7 @@ class ChatBox(BaseModel):
 class RoleGoalTemperatureInput(BaseModel):
     role: str
     goal: str
-    temperature: str  # Change type to str (string)
+    temperature: str  
     backstory: str
 
 class OpenAIInput(BaseModel):
@@ -168,7 +166,7 @@ class ChatData(BaseModel):
 async def insert_role_goal_temperature(id: int, data: RoleGoalTemperatureInput):
     try:
         async with pool.acquire() as connection:
-            # Construct the SQL query
+          
             query = """
                 INSERT INTO chat_boxes (id, role, goal, temperature, backstory, maxtokens)
                 VALUES ($1, $2, $3, $4, $5, $6)
@@ -180,7 +178,6 @@ async def insert_role_goal_temperature(id: int, data: RoleGoalTemperatureInput):
                     maxtokens = EXCLUDED.maxtokens;  
             """
 
-            # Execute the SQL query with the provided parameters
             await connection.execute(query, id, data.role, data.goal, data.temperature, data.backstory, data.maxtokens)
 
         return {"message": f"Role, Goal, backstory, and Temperature for ID {id} inserted/updated successfully"}
@@ -276,16 +273,16 @@ async def insert_data(id: int, data: Data):
 @app.post("/createChatBox")
 async def create_chat_box(chat_box: ChatBox, background_tasks: BackgroundTasks):
     try:
-        # Access the form data from the user object
+    
         chatName = chat_box.chatName
         chatDesc = chat_box.chatDesc
         llm = chat_box.LLM
 
-        # Generate text using ChatGPT
+
         prompt = f"Chat Name: {chatName}\nChat Description: {chatDesc}\nLLM: {llm}\n"
         background_tasks.add_task(generate_text, prompt)
 
-        # Return a response
+
         return {"message": "Chat box creation initiated"}
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -294,13 +291,13 @@ async def create_chat_box(chat_box: ChatBox, background_tasks: BackgroundTasks):
 @app.post("/openChatGPT")
 async def open_chatgpt_prompt(chatgpt_request: ChatGPTRequest):
     try:
-        # Access the prompt from the request body
+       
         prompt = chatgpt_request.prompt
 
-        # Call ChatGPT to generate a response
+
         response = await generate_chatgpt_response(prompt)
 
-        # Return the response from ChatGPT
+   
         return {"response": response}
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -309,13 +306,13 @@ async def open_chatgpt_prompt(chatgpt_request: ChatGPTRequest):
 async def generate_chatgp00t_response(prompt: str):
     try:
         headers = {
-            "Authorization": "Bearer openaiapikeys",  # Replace with your OpenAI API key
+            "Authorization": "Bearer openaiapikeys", 
             "Content-Type": "application/json"
         }
         data = {
-            "model": "gpt-3.5-turbo",  # Specify the ChatGPT model here
+            "model": "gpt-3.5-turbo", 
             "prompt": prompt,
-            "max_tokens": 50  # Set the maximum number of tokens for the response
+            "max_tokens": 50  
         }
 
         async with httpx.AsyncClient() as client:
@@ -335,18 +332,18 @@ async def generate_chatgp00t_response(prompt: str):
 async def get_all_info():
     try:
         async with pool.acquire() as connection:
-            # Execute a SQL query to fetch all chatbox information
+    
             query = "SELECT * FROM chat_boxes;"
             rows = await connection.fetch(query)
 
-            # If there are no rows returned, return an empty list
+     
             if not rows:
                 return []
 
-            # Convert rows to dictionaries for JSON serialization
+   
             chat_boxes = [dict(row) for row in rows]
 
-            # Return the fetched chatbox information
+          
             return chat_boxes
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -356,18 +353,18 @@ async def get_all_info():
 async def get_info(index: int):
     try:
         async with pool.acquire() as connection:
-            # Execute a SQL query to fetch the chat box information based on the provided index
+      
             query = "SELECT * FROM chat_boxes WHERE id = $1;"
             row = await connection.fetchrow(query, index)
 
-            # If no row is returned, the chat box with the given index does not exist
+
             if row is None:
                 raise HTTPException(status_code=404, detail="Chat box not found")
 
-            # Convert the row to a dictionary for JSON serialization
+            
             chat_box = dict(row)
 
-            # Return the fetched chat box information
+          
             return chat_box
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -376,7 +373,7 @@ async def get_info(index: int):
 @app.post("/generateResponse/{id}", response_model=ResponseModel)
 async def generate_response(chatgpt_request: ChatGPTRequest, id: int):
     try:
-        # Fetch values from the database using the provided id
+ 
         async with pool.acquire() as connection:
             query = "SELECT agentname, role, goal, backstory, capability, task FROM chat_boxes WHERE id = $1"
             fetched_data = await connection.fetchrow(query, id)
@@ -384,7 +381,7 @@ async def generate_response(chatgpt_request: ChatGPTRequest, id: int):
         if fetched_data is None:
             raise HTTPException(status_code=404, detail="Data not found")
 
-        # Assign fetched values to variables
+
         agent_name = fetched_data['agentname']
         role = fetched_data['role']
         goal = fetched_data['goal']
@@ -393,14 +390,13 @@ async def generate_response(chatgpt_request: ChatGPTRequest, id: int):
         task = fetched_data['task']
         llm = fetched_data['llm']
 
-        # Access the prompt from the request body
+
         prompt = chatgpt_request.prompt
 
 
-        # Construct a prompt incorporating agent information
         full_prompt = f"{prompt}\n\nAgent Name: {agent_name}\nRole: {role}\nGoal: {goal}\nBackstory: {backstory}\nCapability: {capability}\nTask: {task}"
 
-        # Call a function to generate a response using the combined prompt
+    
         response = await generate_chatgpt_response(full_prompt)
 
         # Return the generated response
@@ -411,10 +407,10 @@ async def generate_response(chatgpt_request: ChatGPTRequest, id: int):
 
 async def generate_chatgpt_response(prompt: str):
     try:
-        # Specify model parameters
-        model = "gpt-3.5-turbo"  # Specify the ChatGPT model here
-        max_tokens = 100  # Set the maximum number of tokens for the response
-        temperature = 0.5  # Adjust temperature for diversity in responses
+
+        model = "gpt-3.5-turbo" 
+        max_tokens = 100  
+        temperature = 0.5  
 
         # Set up HTTP headers
         headers = {
@@ -422,7 +418,7 @@ async def generate_chatgpt_response(prompt: str):
             "Content-Type": "application/json"
         }
 
-        # Set up request data including 'messages' parameter
+       
         data = {
             "model": model,
             "messages": [{"role": "system", "content": prompt}],
@@ -430,7 +426,7 @@ async def generate_chatgpt_response(prompt: str):
             "temperature": temperature
         }
 
-        # Make a POST request to the OpenAI API
+
         async with httpx.AsyncClient() as client:
             response = await client.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
 
@@ -447,31 +443,31 @@ async def generate_chatgpt_response(prompt: str):
         return "Error: An error occurred while generating response"
     
 def is_button_disabled(chat_box_data):
-    # Check if any column, except the 'prompt' column, is empty
+  
     for key, value in chat_box_data.items():
         if key != 'prompt' and not value:
-            return True  # Disable the button if any non-prompt column is empty
-    return False  # Enable the button if all non-prompt columns are non-empty
+            return True 
+    return False 
 
 @app.get("/isButtonDisabled/{chat_box_id}")
 async def check_button_disabled(chat_box_id: int):
     try:
         async with pool.acquire() as connection:
-            # Execute a SQL query to fetch the chat box data based on the provided ID
+        
             query = "SELECT * FROM chat_boxes WHERE id = $1;"
             row = await connection.fetchrow(query, chat_box_id)
 
-            # If no row is returned, the chat box with the given ID does not exist
+           
             if row is None:
                 raise HTTPException(status_code=404, detail="Chat box not found")
 
-            # Convert the row to a dictionary
+          
             chat_box_data = dict(row)
 
-            # Check if the button should be disabled for this chat box
+    
             disabled = is_button_disabled(chat_box_data)
 
-            # Return the result
+   
             return {"disabled": disabled}
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -482,18 +478,17 @@ async def check_button_disabled(chat_box_id: int):
 async def get_chatbox_all_data(chatbox_id: int):
     try:
         async with pool.acquire() as connection:
-            # Execute a SQL query to fetch all data for the chatbox with the provided ID
+         
             query = "SELECT * FROM chat_boxes WHERE id = $1;"
             row = await connection.fetchrow(query, chatbox_id)
 
-            # If no row is returned, the chatbox with the given ID does not exist
+         
             if row is None:
                 raise HTTPException(status_code=404, detail="Chatbox not found")
 
-            # Convert the row to a dictionary for JSON serialization
+         
             chatbox_data = dict(row)
 
-            # Return the fetched chatbox data
             return chatbox_data
     except Exception as e:
         print(f"An error occurred: {str(e)}")
@@ -504,11 +499,11 @@ async def get_chatbox_all_data(chatbox_id: int):
 @app.get("/chatboxes/{chatbox_id}/all_data")
 async def get_chatbox_all_data(chatbox_id: int):
     try:
-        # Make a GET request to fetch chatbox data
+    
         response = requests.get(f"http://localhost:8000/chatboxes/{chatbox_id}/all_data")
-        # Check if the request was successful
+
         response.raise_for_status()
-        # Parse the JSON response
+
         chatbox_data = response.json()
 
         return chatbox_data
@@ -519,7 +514,6 @@ async def get_chatbox_all_data(chatbox_id: int):
 
 logging.basicConfig(level=logging.ERROR)
 
-# Custom exception classes
 class IncompleteDataError(HTTPException):
     def __init__(self):
         super().__init__(status_code=400, detail="Incomplete chat data provided")
@@ -528,7 +522,7 @@ class APIError(HTTPException):
     def __init__(self, message):
         super().__init__(status_code=500, detail=message)
 
-# Function to generate prompt
+
 def generate_prompt(chat_data):
     return f"Agent Name: {chat_data.agentname}\nRole: {chat_data.role}\nGoal: {chat_data.goal}\nBackstory: {chat_data.backstory}\nCapability: {chat_data.capability}\nTask: {chat_data.task}\nPrompt: {chat_data.prompt}"
 
