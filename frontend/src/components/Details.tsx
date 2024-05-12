@@ -28,8 +28,7 @@ const Details: React.FC<DetailsProps> = ({ data }) => {
   const [messageInput, setMessageInput] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const { maxtokens, openaiapibase, openaiapikeys, temperature, llm } =
-    useLLMStore();
+  const { openaiapibase, openaiapikeys, llm } = useLLMStore();
 
   const { agentname, role, goal, backstory, capability, task } =
     useAgentStore();

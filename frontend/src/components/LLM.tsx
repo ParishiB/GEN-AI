@@ -63,11 +63,11 @@ const LLM: React.FC<LLMProps> = ({ name }: LLMProps) => {
             type="number"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          <h2 className="text-left">OpenAI API Base</h2>
+          <h2 className="text-left">AI Engine</h2>
           <input
             value={openaiapibase}
             onChange={(e) => setopenaiapibase(e.target.value)}
-            placeholder="OpenAI API Base"
+            placeholder="AI Engine"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
           <h2 className="text-left">OpenAI API Keys</h2>
