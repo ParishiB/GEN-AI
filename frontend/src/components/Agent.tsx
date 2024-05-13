@@ -7,7 +7,7 @@ interface AgentState {
   backstory: string;
   capability: string;
   task: string;
-  setAgentName: (agentname: string) => void; 
+  setAgentName: (agentname: string) => void;
   setRole: (role: string) => void;
   setGoal: (goal: string) => void;
   setBackstory: (backstory: string) => void;
@@ -16,13 +16,13 @@ interface AgentState {
 }
 
 export const useAgentStore = create<AgentState>((set) => ({
-  agentname: "", 
+  agentname: "",
   role: "",
   goal: "",
   backstory: "",
   capability: "",
   task: "",
-  setAgentName: (agentname) => set({ agentname }), 
+  setAgentName: (agentname) => set({ agentname }),
   setRole: (role) => set({ role }),
   setGoal: (goal) => set({ goal }),
   setBackstory: (backstory) => set({ backstory }),
@@ -32,13 +32,13 @@ export const useAgentStore = create<AgentState>((set) => ({
 
 const Agent = () => {
   const {
-    agentname, 
+    agentname,
     role,
     goal,
     backstory,
     capability,
     task,
-    setAgentName, // Corrected spelling here
+    setAgentName,
     setRole,
     setGoal,
     setBackstory,

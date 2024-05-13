@@ -27,7 +27,7 @@ export const useLLMStore = create<LLMState>((set) => ({
   setmaxtokens: (value) => set({ maxtokens: value }),
   setopenaiapibase: (value) => set({ openaiapibase: value }),
   setopenaiapikeys: (value) => set({ openaiapikeys: value }),
-  setTemperature: (value) => set({ temperature: value }), // Set temperature directly
+  setTemperature: (value) => set({ temperature: value }),
   setLlm: (value) => set({ llm: value }),
 }));
 

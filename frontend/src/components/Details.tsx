@@ -170,29 +170,30 @@ const Details: React.FC<DetailsProps> = ({ data }) => {
           </button>
           <h1 className="font-semibold ml-5">Agents</h1>
           <button
-            className="flex items-center p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]"
+            className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]"
             onClick={openAgentForm}
           >
-            <h3 className="mr-3 ">Agents</h3>
+            <h3 className="mr-3">Agents</h3>
             <IoMenuOutline />
           </button>
+
           <div className="flex p-2">
             <GoTools />
             <h1 className="font-semibold ml-1">Tools</h1>
           </div>
-          <button className="flex items-center p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
+          <button className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
             <h3 className="mr-3">Wikisearch</h3>
             <IoMenuOutline />
           </button>
-          <button className="flex items-center p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
+          <button className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
             <h3 className="mr-3">DuckDuck search</h3>
             <IoMenuOutline />
           </button>
-          <button className="flex items-center p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
+          <button className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
             <h3 className="mr-3">GMail</h3>
             <IoMenuOutline />
           </button>
-          <button className="flex items-center p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
+          <button className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]">
             <h3 className="mr-3">Github</h3>
             <IoMenuOutline />
           </button>
@@ -201,21 +202,21 @@ const Details: React.FC<DetailsProps> = ({ data }) => {
             <h1 className="font-semibold ml-1">LLMs</h1>
           </div>
           <button
-            className="flex items-center p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]"
+            className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]"
             onClick={openAIForm}
           >
             <h3 className="mr-3">OpenAI 3.5</h3>
             <IoMenuOutline />
           </button>
           <button
-            className="flex items-center p-3 m-2  border border-gray-400 rounded-xl mr-2 w-[200px]"
+            className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]"
             onClick={openAI2Form}
           >
             <h3 className="mr-3">OpenAI 4</h3>
             <IoMenuOutline />
           </button>
           <button
-            className="flex items-center p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]"
+            className="flex items-center justify-between p-3 m-2 border border-gray-400 rounded-xl mr-2 w-[200px]"
             onClick={openAI3Form}
           >
             <h3 className="mr-3">Azure OpenAI</h3>

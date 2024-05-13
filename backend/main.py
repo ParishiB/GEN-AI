@@ -6,11 +6,11 @@ from pydantic import BaseModel
 import asyncpg
 import httpx
 from openai import api_key
-import redis
 
+# python3 -m uvicorn main:app --reload  
 
 app = FastAPI()
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+
 
 app.add_middleware(
     CORSMiddleware,
