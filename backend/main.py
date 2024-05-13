@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 import asyncpg
 import httpx
+import redis
 from openai import api_key
 
 # python3 -m uvicorn main:app --reload  
@@ -20,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-POSTGRES_DSN = "postgresql://parishiieb:A82brOlJyMWd@ep-shy-resonance-a59aitl2.us-east-2.aws.neon.tech/calendly?sslmode=require"
+POSTGRES_DSN = "postgresql://parishiieb@ep-shy-resonance-a59aitl2.us-east-2.aws.neon.tech/calendly?sslmode=require"
 
 async def create_pool():
     try:
@@ -358,3 +359,34 @@ async def generate_azure_openai_response():
 #     except Exception as e:
 #         print("An error occurred while generating text:", str(e))
 #         return "Error: An error occurred while generating response"
+    
+def redis_connect() -> redis.client.Redis:
+    try:
+        client = redis.Redis(
+            host="localhost",
+            port=6379,
+            db=0,
+        )
+        ping = client.ping()
+        if ping is True:
+            return client
+    except redis.ConnectionError:
+        print("Connection Error!")
+       
+
+
+client = redis_connect()
+
+async def redis_gpt_response(prompt: str, openaiapikeys: str):
+    try:     
+        cached_prompt = client.get("cached_prompt")
+        if cached_prompt:
+            cached_prompt = cached_prompt.decode('utf-8')
+            return {"new_prompt": prompt, "cached_prompt": cached_prompt}
+
+        client.setex("cached_prompt", 600, prompt)
+        return {"new_prompt": prompt, "cached_prompt": None}
+
+    except Exception as e:
+        print("An error occurred while generating text:", str(e))
+        return "Error: An error occurred while generating response"
